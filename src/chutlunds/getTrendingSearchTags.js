@@ -1,8 +1,7 @@
 import { load } from "cheerio";
 import Scrape_Video_Item from "./utils";
 
-
-export async function getVideos(request) {
+export async function getTrendingSearchTags(request) {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
       status: 405,
@@ -18,28 +17,13 @@ export async function getVideos(request) {
     const response = await fetch(url);
     const html3 = await response.text();
     const $2 = load(html3);
-    const finalDataArray = Scrape_Video_Item($2);
-    let pages = [];
-    $2(".paginate-bar .status").each((i, el) => {
-      const data2 = $2(el).text().replace("page", "");
-      pages = data2.split("/");
+    var tags = [];
+    $2(".list li a").each((i, el) => {
+      const data2 = $2(el).text();
+      tags.push(data2);
     });
-    const pageNumbers = [];
-    $2(".pagination ul li").each(function () {
-      const listItem = $2(this);
-      const pageText = listItem.text().trim();
-      if (!listItem.hasClass("previous") && !listItem.hasClass("next") && !listItem.hasClass("disabled")) {
-        pageNumbers.push(pageText);
-      }
-    });
-    if (pages.length == 0 && pageNumbers.length >= 2) {
-      pages.push(pageNumbers[0]);
-      pages.push(pageNumbers[pageNumbers.length - 1]);
-    }
     const result = {
-      finalDataArray,
-      pages,
-      noVideos: finalDataArray.length === 0
+      tags
     };
     return new Response(JSON.stringify(result), {
       status: 200,
