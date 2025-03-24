@@ -1,0 +1,140 @@
+const { writeFile } = require("fs/promises");
+const { load } = require("cheerio");
+const fs = require("fs");
+const { readFile } = require("fs/promises");
+
+async function runCode() {
+
+    const response = await fetch("https://spankbang.party/");
+    if (!response.ok) {
+        throw new Error("Failed to fetch");
+    }
+
+
+    const html3 = await response.text();
+    // writeFile('home.html', html3, (err) => {
+    //     if (err) {
+    //         console.error('Error writing file:', err);
+    //     } else {
+    //         console.log('home.html saved successfully!');
+    //     }
+    // });
+    const $2 = load(html3); // Load HTML into Cheerio
+
+    const finalDataArray = Scrape_Video_Item($2);
+    console.log(finalDataArray.length);
+
+
+    return
+
+
+}
+function Scrape_Video_Item($2) {
+    const finalDataArray = [];
+    $2(".js-video-item").each((i, el) => {
+
+
+        const thumbnail = $2(el).find("picture img").attr("data-src");
+        const title = $2(el).find("picture img").attr("alt");
+        const duration = $2(el).find('.absolute.right-2.top-2.rounded.bg-neutral-900\\/75.px-1.text-body-sm.text-primary').text().trim();
+        const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
+        const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+        const channelHref = $2(el).find('a[data-testid="title"]').attr('href');
+        const videoBadge = $2(el).find('div.absolute.left-2.top-2').text().trim();
+        const previewVideo = $2(el).find('video source').attr('data-src');
+        const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+
+
+
+
+        if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
+            finalDataArray.push({
+                thumbnail,
+                title,
+                duration,
+                views,
+                likePercentage,
+                channelName,
+                channelHref,
+                videoBadge,
+                previewVideo,
+                href
+            });
+        }
+    });
+
+
+    if (finalDataArray.length == 0) {
+        $2(".main_results .video-item").each((i, el) => {
+            const thumbnail = $2(el).find("picture img").attr("data-src");
+            const title = $2(el).find("picture img").attr("alt");
+            const duration = $2(el).find(".l").text();
+            const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
+            const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+            const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+            const channelHref = $2(el).find('a[data-testid="title"]').attr('href');
+            const videoBadge = $2(el).find(".video-badge.h").text().trim();
+            const previewVideo = $2(el).find("picture img").attr("data-preview");
+            const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+            if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
+                finalDataArray.push({
+                    thumbnail,
+                    title,
+                    duration,
+                    views,
+                    likePercentage,
+                    channelName,
+                    channelHref,
+                    videoBadge,
+                    previewVideo,
+                    href
+                });
+            }
+        });
+    }
+    if (finalDataArray.length == 0) {
+        $2(".video-item").each((i, el) => {
+            const thumbnail = $2(el).find("picture img").attr("data-src");
+            const title = $2(el).find("picture img").attr("alt");
+            const duration = $2(el).find(".l").text();
+            const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
+            const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+            const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+            const channelHref = $2(el).find('a[data-testid="title"]').attr('href');
+             const videoBadge = $2(el).find(".video-badge.h").text().trim();
+            const previewVideo = $2(el).find("picture img").attr("data-preview");
+            const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+            if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
+                finalDataArray.push({
+                    thumbnail,
+                    title,
+                    duration,
+                    views,
+                    likePercentage,
+                    channelName,
+                    channelHref,
+                    videoBadge,
+                    previewVideo,
+                    href
+                });
+            }
+        });
+    }
+
+
+
+    return finalDataArray;
+}
+
+
+
+
+
+
+
+
+
+
+
+runCode()
