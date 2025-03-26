@@ -5,7 +5,8 @@ import { getChannelVideos } from './getChannelVideos';
 import { getTrendingChannels } from './getTrendingChannels';
 import { getTrendingSearchTags } from './getTrendingSearchTags.js';
 import { getPornstarVideos } from './getPornstarVideos';
-
+import { getCreators } from './getCreators.js';
+import {getCreatorsPage} from './getCreatorsPage.js';
 
 export default {
   async fetch(request) {
@@ -29,6 +30,12 @@ export default {
     }
     else if (path === '/chutlunds/getPornstarVideos') {
       return await getPornstarVideos(request);
+    }
+    else if (path === '/chutlunds/getCreators') {
+      return await getCreators(request);
+    }
+    else if (path === '/chutlunds/getCreatorsPage') {
+      return await getCreatorsPage(request);
     }
 
     return new Response('Not Found', { status: 404 });

@@ -27,12 +27,22 @@ export async function getHomePageVideos(request) {
         const thumbnail = select2(el).find("picture img").attr("data-src");
         const title = select2(el).find("picture img").attr("alt");
         const duration = select2(el).find(".l").text();
-        const views = select2(el).find(".stats .v").text().trim();
-        const likePercentage = select2(el).find(".stats .r").text().trim();
-        const uploadedTime = select2(el).find(".stats .d").text().trim();
+        const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
+        const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+        const channelHref = $2(el).find('a[data-testid="title"]').attr('href') || '';
         const videoBadge = select2(el).find(".video-badge.h").text().trim();
         const previewVideo = select2(el).find("picture img").attr("data-preview");
         const href2 = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+        var refrenceLinkType = ''
+
+        if (channelHref.includes("/channel/")) refrenceLinkType = "channel"
+        if (channelHref.includes("/s/")) refrenceLinkType = "search"
+        if (channelHref.includes("/creator/")) refrenceLinkType = "creator"
+        if (channelHref.includes("/pornstar/")) refrenceLinkType = "pornstar"
+    
+    
+
         if (href2 !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
           finalDataArray.push({
             thumbnail,
@@ -40,8 +50,10 @@ export async function getHomePageVideos(request) {
             duration,
             views,
             likePercentage,
-            uploadedTime,
-            videoBadge,
+            channelName,
+            channelHref,
+            refrenceLinkType,
+             videoBadge,
             previewVideo,
             href: href2
           });

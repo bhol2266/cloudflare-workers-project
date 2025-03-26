@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div x-data="{ showTooltip: false }" class=" flex flex-grow flex-col justify-center gap-4 md:gap-2">
+        <div class="relative flex flex-row items-center gap-1 xl:gap-2">
+            <h1 class="p-0 text-title-sm font-bold capitalize text-primary md:text-title-md xl:text-title-md">
+                Skyller
+            </h1>
+
+
+
+
+            <span @click="showTooltip = !showTooltip" class="relative top-1 self-center text-body-lg xl:text-title-md">
+                <svg class="i_svg i_icon-verified-colored">
+                    <use xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#icon-verified-colored"></use>
+                </svg>
+                <span x-show="showTooltip" @click.outside="showTooltip = false"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 transform scale-95"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-95"
+                    class="text-white absolute bottom-10 left-2 z-[9000] -translate-x-1/2 transform whitespace-nowrap rounded bg-surface-quaternary p-2 text-sm shadow-lg xl:left-3.5"
+                    style="display: none;">
+                    Verified Creator
+                    <span
+                        class="absolute bottom-[-6px] left-1/2 h-0 w-0 -translate-x-1/2 transform border-l-[0.375rem] border-r-[0.375rem] border-t-[0.375rem] border-solid border-surface-quaternary border-l-transparent border-r-transparent"></span>
+                </span>
+            </span>
+
+        </div>
+
+        <div class="hidden md:block">
+            <div class="flex flex-row flex-wrap gap-2 md:gap-4">
+
+                <div>
+                    <span class=" text-body-sm text-tertiary md:text-body-md">
+                        Videos: <em class="not-italic text-primary">1</em>
+                    </span>
+                </div>
+
+                <div>
+                    <span class=" text-body-sm text-tertiary md:text-body-md">
+                        Views: <em class="not-italic text-primary">15</em>
+                    </span>
+                </div>
+
+                <div>
+                    <span class=" text-body-sm text-tertiary md:text-body-md">
+                        Subscribers: <em class="not-italic text-primary">11</em>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="hidden md:flex md:flex-row md:gap-3">
+
+
+
+            <a href="https://ctrdwm.com/?siteId=jasmin&amp;categoryName=girl&amp;pageName=freechat&amp;performerName=Skyller&amp;prm[psid]=spankbang&amp;prm[pstool]=205_1&amp;prm[psprogram]=revs&amp;prm[campaign_id]=128346&amp;subAffId={SUBAFFID}"
+                rel="nofollow" target="_blank" class="flex items-center gap-1 text-body-md text-secondary">
+
+                <span class="flex items-center text-icon-md"> <svg class="i_svg i_icon-social-livejasmin">
+                        <use xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#icon-social-livejasmin">
+                        </use>
+                    </svg> </span>
+
+                LiveJasmin
+            </a>
+
+
+
+        </div>
+
+
+
+
+        <div class="grid grid-cols-1 gap-2 md:mt-2 md:grid-cols-2">
+
+            <div class="md:order-last">
+
+
+
+                <form class="w-full flex items-center" data-feature="subscribe" data-loading-element="subscribe-button"
+                    hx-post="/api/user/subscribe_creator" hx-swap="outerHTML">
+
+                    <input name="id" type="hidden" value="500796">
+
+
+
+
+
+
+                    <button
+                        class="cursor-pointer font-bold rounded flex items-center relative text-cta z-10 disabled:opacity-40 disabled:pointer-events-none disabled:cursor-default
+py-1.5 px-4 text-body-md
+
+bg-gradient-to-b from-yellow-400 to-yellow-500 before:bg-gradient-to-b before:from-yellow-200
+before:to-yellow-300 hover:before:opacity-100 before:transition-opacity before:duration-300 before:ease-out before:opacity-0
+
+before:absolute before:rounded before:inset-0 before:transition-opacity before:-z-10 before:w-full w-full justify-center "
+                        :class="{ 'cursor-wait': loading }" x-data="button"
+                        @set-loading-element.window.debounce.300ms="$event.detail.target === 'subscribe-button' ? setLoading($event.detail.loading) : null">
+                        <span class="flex items-center max-w-full" x-show="!loading">
+
+                            <span class="mr-1 flex items-center "><svg class="i_svg i_new-ui-add-square">
+                                    <use
+                                        xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#new-ui-add-square">
+                                    </use>
+                                </svg></span>
+
+
+                            Subscribe
+
+
+                        </span>
+                        <span class="flex items-center animate-spin h-5" x-show="loading" style="display: none;"><svg
+                                class="i_svg i_spinner">
+                                <use xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#spinner"></use>
+                            </svg></span>
+                    </button>
+
+                </form>
+            </div>
+
+
+
+
+
+            <a href="https://ctrdwm.com/?siteId=jasmin&amp;categoryName=girl&amp;pageName=freechat&amp;performerName=Skyller&amp;prm[psid]=spankbang&amp;prm[pstool]=205_1&amp;prm[psprogram]=revs&amp;prm[campaign_id]=128346&amp;subAffId={SUBAFFID}"
+                rel="nofollow" target="_blank"></a>
+
+
+
+
+                <button
+                    class="cursor-pointer font-bold rounded flex items-center relative text-cta z-10 disabled:opacity-40 disabled:pointer-events-none disabled:cursor-default
+py-1.5 px-4 text-body-md
+
+after:border after:border-link-primary text-primary box-border rounded justify-center after:border-solid before:bg-link-primary
+after:absolute after:rounded after:inset-0 hover:before:opacity-10 before:transition-opacity before:duration-300 before:ease-out before:opacity-0
+
+before:absolute before:rounded before:inset-0 before:transition-opacity before:-z-10 before:w-full w-full justify-center md:max-h-8 whitespace-nowrap "
+                    :class="{ 'cursor-wait': loading }" x-data="button"
+                    @set-loading-element.window.debounce.300ms="$event.detail.target === 'None' ? setLoading($event.detail.loading) : null">
+                    <span class="flex items-center max-w-full" x-show="!loading">
+
+
+                        <span class="mr-1 flex items-center text-icon-xs text-link-primary">
+                            <svg class="i_svg i_icon-social-livejasmin">
+                                <use
+                                    xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#icon-social-livejasmin">
+                                </use>
+                            </svg>
+                        </span>
+                        <span class="truncate text-primary">My LiveJasmin</span>
+
+
+                    </span>
+                    <span class="flex items-center animate-spin h-5" x-show="loading" style="display: none;"><svg
+                            class="i_svg i_spinner">
+                            <use xlink:href="/static/desktop/gen/universal.master.6.1.468b3b5d.svg#spinner"></use>
+                        </svg></span>
+                </button>
+
+            </a>
+
+
+        </div>
+    </div>
+
+</body>
+
+</html>

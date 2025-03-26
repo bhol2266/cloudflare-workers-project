@@ -14030,10 +14030,19 @@ function Scrape_Video_Item($2) {
     const views = $2(el).find('span[data-testid="views"]').find("span").last().text().trim();
     const likePercentage = $2(el).find('span[data-testid="rates"]').find("span").last().text().trim();
     const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
-    const channelHref = $2(el).find('a[data-testid="title"]').attr("href");
+    const channelHref = $2(el).find('a[data-testid="title"]').attr("href") || "";
     const videoBadge = $2(el).find("div.absolute.left-2.top-2").text().trim();
     const previewVideo = $2(el).find("video source").attr("data-src");
     const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+    var refrenceLinkType = "";
+    if (channelHref.includes("/channel/"))
+      refrenceLinkType = "channel";
+    if (channelHref.includes("/s/"))
+      refrenceLinkType = "search";
+    if (channelHref.includes("/creator/"))
+      refrenceLinkType = "creator";
+    if (channelHref.includes("/pornstar/"))
+      refrenceLinkType = "pornstar";
     if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
       finalDataArray.push({
         thumbnail,
@@ -14043,6 +14052,7 @@ function Scrape_Video_Item($2) {
         likePercentage,
         channelName,
         channelHref,
+        refrenceLinkType,
         videoBadge,
         previewVideo,
         href
@@ -14057,10 +14067,19 @@ function Scrape_Video_Item($2) {
       const views = $2(el).find('span[data-testid="views"]').find("span").last().text().trim();
       const likePercentage = $2(el).find('span[data-testid="rates"]').find("span").last().text().trim();
       const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
-      const channelHref = $2(el).find('a[data-testid="title"]').attr("href");
+      const channelHref = $2(el).find('a[data-testid="title"]').attr("href") || "";
       const videoBadge = $2(el).find(".video-badge.h").text().trim();
       const previewVideo = $2(el).find("picture img").attr("data-preview");
       const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+      var refrenceLinkType = "";
+      if (channelHref.includes("/channel/"))
+        refrenceLinkType = "channel";
+      if (channelHref.includes("/s/"))
+        refrenceLinkType = "search";
+      if (channelHref.includes("/creator/"))
+        refrenceLinkType = "creator";
+      if (channelHref.includes("/pornstar/"))
+        refrenceLinkType = "pornstar";
       if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
         finalDataArray.push({
           thumbnail,
@@ -14070,6 +14089,7 @@ function Scrape_Video_Item($2) {
           likePercentage,
           channelName,
           channelHref,
+          refrenceLinkType,
           videoBadge,
           previewVideo,
           href
@@ -14085,10 +14105,19 @@ function Scrape_Video_Item($2) {
       const views = $2(el).find('span[data-testid="views"]').find("span").last().text().trim();
       const likePercentage = $2(el).find('span[data-testid="rates"]').find("span").last().text().trim();
       const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
-      const channelHref = $2(el).find('a[data-testid="title"]').attr("href");
+      const channelHref = $2(el).find('a[data-testid="title"]').attr("href") || "";
       const videoBadge = $2(el).find(".video-badge.h").text().trim();
       const previewVideo = $2(el).find("picture img").attr("data-preview");
       const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+      var refrenceLinkType = "";
+      if (channelHref.includes("/channel/"))
+        refrenceLinkType = "channel";
+      if (channelHref.includes("/s/"))
+        refrenceLinkType = "search";
+      if (channelHref.includes("/creator/"))
+        refrenceLinkType = "creator";
+      if (channelHref.includes("/pornstar/"))
+        refrenceLinkType = "pornstar";
       if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
         finalDataArray.push({
           thumbnail,
@@ -14098,6 +14127,7 @@ function Scrape_Video_Item($2) {
           likePercentage,
           channelName,
           channelHref,
+          refrenceLinkType,
           videoBadge,
           previewVideo,
           href
@@ -14189,12 +14219,22 @@ async function getHomePageVideos(request) {
         const thumbnail = select2(el).find("picture img").attr("data-src");
         const title = select2(el).find("picture img").attr("alt");
         const duration = select2(el).find(".l").text();
-        const views = select2(el).find(".stats .v").text().trim();
-        const likePercentage = select2(el).find(".stats .r").text().trim();
-        const uploadedTime = select2(el).find(".stats .d").text().trim();
+        const views = $2(el).find('span[data-testid="views"]').find("span").last().text().trim();
+        const likePercentage = $2(el).find('span[data-testid="rates"]').find("span").last().text().trim();
+        const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+        const channelHref = $2(el).find('a[data-testid="title"]').attr("href") || "";
         const videoBadge = select2(el).find(".video-badge.h").text().trim();
         const previewVideo = select2(el).find("picture img").attr("data-preview");
         const href2 = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+        var refrenceLinkType = "";
+        if (channelHref.includes("/channel/"))
+          refrenceLinkType = "channel";
+        if (channelHref.includes("/s/"))
+          refrenceLinkType = "search";
+        if (channelHref.includes("/creator/"))
+          refrenceLinkType = "creator";
+        if (channelHref.includes("/pornstar/"))
+          refrenceLinkType = "pornstar";
         if (href2 !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
           finalDataArray.push({
             thumbnail,
@@ -14202,7 +14242,9 @@ async function getHomePageVideos(request) {
             duration,
             views,
             likePercentage,
-            uploadedTime,
+            channelName,
+            channelHref,
+            refrenceLinkType,
             videoBadge,
             previewVideo,
             href: href2
@@ -14565,6 +14607,72 @@ async function getPornstarVideos(request) {
   }
 }
 
+// src/chutlunds/getCreators.js
+init_checked_fetch();
+init_modules_watch_stub();
+async function getCreators(request) {
+  try {
+    const requestBody = await request.json();
+    let page = requestBody.page;
+    let url = `https://spankbang.party/creators/${page}/?o=new`;
+    console.log(url);
+    const response = await fetch(url);
+    const html3 = await response.text();
+    const $2 = load(html3);
+    const finalDataArray = [];
+    $2("#channels a").each((i, el) => {
+      const creatorHref = $2(el).attr("href") || "";
+      var creatorImage = $2(el).find("img").attr("data-src") || $2(el).find("img").attr("src");
+      const creatorViews = $2(el).find(".absolute.bottom-2.left-2").text().trim();
+      const creatorVideos = $2(el).find(".absolute.bottom-2.right-2").text().trim();
+      const creatorName = $2(el).find("span.text-body-lg.text-link-secondary").text().trim();
+      if (creatorImage) {
+        creatorImage = creatorImage.replace(/^\/\//, "https://").replace(".com", ".party");
+      }
+      if (creatorName.length != 0 || creatorName != null) {
+        finalDataArray.push({
+          creatorHref,
+          creatorImage,
+          creatorViews,
+          creatorVideos,
+          creatorName
+        });
+      }
+    });
+    let pages = [];
+    $2(".paginate-bar .status").each((i, el) => {
+      const data2 = $2(el).text().replace("page", "");
+      pages = data2.split("/");
+    });
+    const pageNumbers = [];
+    $2(".pagination ul li").each(function() {
+      const listItem = $2(this);
+      const pageText = listItem.text().trim();
+      if (!listItem.hasClass("previous") && !listItem.hasClass("next") && !listItem.hasClass("disabled")) {
+        pageNumbers.push(pageText);
+      }
+    });
+    if (pages.length == 0 && pageNumbers.length >= 2) {
+      pages.push(pageNumbers[0]);
+      pages.push(pageNumbers[pageNumbers.length - 1]);
+    }
+    const result = {
+      finalDataArray,
+      pages
+    };
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
 // src/chutlunds/index.js
 var chutlunds_default = {
   async fetch(request) {
@@ -14582,6 +14690,8 @@ var chutlunds_default = {
       return await getTrendingSearchTags(request);
     } else if (path === "/chutlunds/getPornstarVideos") {
       return await getPornstarVideos(request);
+    } else if (path === "/chutlunds/getCreators") {
+      return await getCreators(request);
     }
     return new Response("Not Found", { status: 404 });
   }
