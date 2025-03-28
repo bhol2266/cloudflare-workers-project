@@ -17,6 +17,8 @@ export async function getHomePageVideos(request) {
   try {
     const requestBody = await request.json();
     let href = requestBody.href;
+
+    
     const response = await fetch(href);
     const body = await response.text();
     const $2 = load(body);
