@@ -20,6 +20,7 @@ export async function getCreatorsPage(request) {
         }
 
         const creatorHref = $(".grid.grid-cols-1.gap-2.md\\:mt-2.md\\:grid-cols-2 a").attr("href");
+        
 
         // Extracting counts
         const videosCount = $('span:contains("Videos") em').text().trim();
