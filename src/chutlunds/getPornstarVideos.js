@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import Scrape_Video_Item from "./utils";
+import { Scrape_Video_Item_Channel_Creator_Pornstar } from "./utils";
 
 
 export async function getPornstarVideos(request) {
@@ -16,9 +16,7 @@ export async function getPornstarVideos(request) {
       url = url.replace("https://spankbang.com/", "https://spankbang.party/");
     }
     const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Failed to fetch");
-    }
+
     const html3 = await response.text();
     const $2 = load(html3);
 
@@ -35,7 +33,7 @@ export async function getPornstarVideos(request) {
     const videos = $2("span:contains('Videos:') em").first().text().trim();
     const views = $2("span:contains('Views:') em").first().text().trim();
     const subscribers = $2("span:contains('Subscribers:') em").first().text().trim();
- 
+
     const firstImageSrc = $2('.flex.h-32.shrink-0.basis-24.items-center.xl\\:h-\\[8\\.625rem\\] img').first().attr("src");
 
     // Extract similar profiles
@@ -48,7 +46,7 @@ export async function getPornstarVideos(request) {
       if (image) {
         image = image.replace(/^\/\//, "https://").replace(".com", ".party");
       }
-    
+
       if (name && image) {
         similarProfiles.push({ name, image, link });
       }
@@ -68,7 +66,7 @@ export async function getPornstarVideos(request) {
     };
 
 
-    const finalDataArray = Scrape_Video_Item($2);
+    const finalDataArray = Scrape_Video_Item_Channel_Creator_Pornstar($2);
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
       const data2 = $2(el).text().replace("page", "");
@@ -86,9 +84,9 @@ export async function getPornstarVideos(request) {
       pages.push(pageNumbers[0]);
       pages.push(pageNumbers[pageNumbers.length - 1]);
     }
- 
+
     var collageImages = [];
-  
+
     if (finalDataArray.length > 0) {
       const maxImages = Math.min(finalDataArray.length, 18);
       for (let index2 = 0; index2 < maxImages; index2++) {
@@ -101,14 +99,14 @@ export async function getPornstarVideos(request) {
         collageImages.push(thumbnail);
       }
     }
- 
+
     const result = {
       finalDataArray,
       pages,
       collageImages,
       pornstarData
 
-  };
+    };
 
 
     return new Response(JSON.stringify(result), {

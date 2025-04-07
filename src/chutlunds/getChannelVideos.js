@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import Scrape_Video_Item from "./utils";
+import {Scrape_Video_Item_Channel_Creator_Pornstar} from "./utils";
 
 export async function getChannelVideos(request) {
   if (request.method !== "POST") {
@@ -21,7 +21,7 @@ export async function getChannelVideos(request) {
     const html3 = await response.text();
     const $2 = load(html3);
   
-    const finalDataArray = Scrape_Video_Item($2);
+    const finalDataArray = Scrape_Video_Item_Channel_Creator_Pornstar($2);
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
       const data2 = $2(el).text().replace("page", "");

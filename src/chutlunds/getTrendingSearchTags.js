@@ -1,5 +1,4 @@
 import { load } from "cheerio";
-import Scrape_Video_Item from "./utils";
 
 export async function getTrendingSearchTags(request) {
   if (request.method !== "POST") {

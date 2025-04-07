@@ -9,7 +9,6 @@ export async function getCreators(request) {
     const requestBody = await request.json();
     let page = requestBody.page;
     let url = `https://spankbang.party/creators/${page}/?o=new`;
-    console.log(url);
 
 
     const response = await fetch(url);
@@ -42,7 +41,6 @@ export async function getCreators(request) {
 
     });
 
-    console.log(finalDataArray);
 
 
     let pages = [];

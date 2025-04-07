@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import Scrape_Video_Item from "./utils";
+import {Scrape_Video_Item_Channel_Creator_Pornstar} from "./utils";
 
 export async function getCreatorsPage(request) {
 
@@ -23,9 +23,9 @@ export async function getCreatorsPage(request) {
         
 
         // Extracting counts
-        const videosCount = $('span:contains("Videos") em').text().trim();
-        const viewsCount = $('span:contains("Views") em').text().trim();
-        const subscribersCount = $('span:contains("Subscribers") em').text().trim();
+        const videosCount = $('span:contains("Videos") em').first().text().trim();
+        const viewsCount = $('span:contains("Views") em').first().text().trim();
+        const subscribersCount = $('span:contains("Subscribers") em').first().text().trim();
 
         // Extracting description
         const description = $('p.text-body-md').text().trim();
@@ -62,7 +62,7 @@ export async function getCreatorsPage(request) {
             pages.push(pageNumbers[pageNumbers.length - 1]);
         }
 
-        const finalDataArray = Scrape_Video_Item($);
+        const finalDataArray = Scrape_Video_Item_Channel_Creator_Pornstar($);
         var collageImages = [];
 
 
@@ -85,7 +85,6 @@ export async function getCreatorsPage(request) {
             creatorData
 
         };
-        console.log(result);
 
         return new Response(JSON.stringify(result), {
             status: 200,

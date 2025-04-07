@@ -1,8 +1,10 @@
 import { load } from "cheerio";
-import Scrape_Video_Item from "./utils";
-
+import { Scrape_Video_Item_Category_Search } from "./utils";
 
 export async function getVideos(request) {
+
+  //this api is used by category and seach page only
+
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
       status: 405,
@@ -18,7 +20,7 @@ export async function getVideos(request) {
     const response = await fetch(url);
     const html3 = await response.text();
     const $2 = load(html3);
-    const finalDataArray = Scrape_Video_Item($2);
+    const finalDataArray = Scrape_Video_Item_Category_Search($2);
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
       const data2 = $2(el).text().replace("page", "");

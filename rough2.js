@@ -1,47 +1,28 @@
-async function scrape(href) {
+const fs = require('fs');
+const { load } = require('cheerio');
 
-  const response = await fetch(href);
-  const body = await response.text();
-  const $$ = load(body);
+// URL of the page you want to fetch
+const href = 'https://spankbang.party/'; // Replace with the actual URL
 
-  let finalDataArray = []
+async function fetchAndSaveHTML() {
+    try {
+        // Fetch the HTML content from the URL
+        const response = await fetch(href);
+        const body = await response.text();
 
-  $$(".js-video-item").each((i, el) => {
+        // Load the HTML into cheerio (optional step if you want to parse/modify it)
+        const $ = load(body);
 
-    const thumbnail = $$(el).find("picture img").attr("data-src");
-    const title = $$(el).find("picture img").attr("alt");
-    const duration = $$(el).find('.absolute.right-2.top-2.rounded.bg-neutral-900\\/75.px-1.text-body-sm.text-primary').text().trim();
-    const views = $$(el).find('span[data-testid="views"]').find('span').last().text().trim();
-    const likePercentage = $$(el).find('span[data-testid="rates"]').find('span').last().text().trim();
-    const channelName = $$(el).find('a[data-testid="title"] span').text().trim();
-    const channelHref = $$(el).find('a[data-testid="title"]').attr('href') || '';
-    const videoBadge = $$(el).find('div.absolute.left-2.top-2').text().trim();
-    const previewVideo = $$(el).find('video source').attr('data-src');
-    const href = `https://spankbang.com$${$$(el).find("a").attr("href")}`;
-    var refrenceLinkType = ''
-    if (channelHref.includes("/channel/")) refrenceLinkType = "channel"
-    if (channelHref.includes("/s/")) refrenceLinkType = "search"
-    if (channelHref.includes("/creator/")) refrenceLinkType = "creator"
-    if (channelHref.includes("/pornstar/")) refrenceLinkType = "pornstar"
+        // Optionally, you can manipulate the HTML here with cheerio if needed
 
+        // Save the HTML content to a local file
+        fs.writeFileSync('output.html', body);
 
-    if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
-      finalDataArray.push({
-        thumbnail,
-        title,
-        duration,
-        views,
-        likePercentage,
-        channelName,
-        channelHref,
-        refrenceLinkType,
-        videoBadge,
-        previewVideo,
-        href
-      });
+        console.log('HTML saved to output.html');
+    } catch (error) {
+        console.error('Error fetching and saving HTML:', error);
     }
-  });
-
-  return finalDataArray;
-
 }
+
+// Call the function to fetch and save the HTML
+fetchAndSaveHTML();
