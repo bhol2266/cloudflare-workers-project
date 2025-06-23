@@ -1,19 +1,28 @@
 import { load } from "cheerio";
 
 
-export async function getHomePageVideos(request) {
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
+export async function getHomePageVideos(req) {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ message: "Only POST reqs are allowed" }), {
       status: 405,
       headers: { "Content-Type": "application/json" }
     });
   }
+  let finalDataArray_Array = [];
   let trendingChannelArray = [];
   let tagsArray = [];
+  let trendingCategoryArray = [];
   let trendingPornstarsArray = [];
+
   try {
-    const requestBody = await request.json();
+
+    const requestBody = await req.json();
+
     let href = requestBody.href;
+
+    console.log('====================================');
+    console.log(requestBody.href);
+    console.log('====================================');
 
     const response = await fetch(href);
     const body = await response.text();
@@ -80,9 +89,9 @@ export async function getHomePageVideos(request) {
       let imageUrl = $(el).find("img").attr("data-src") || $(el).find("img").attr("src");
       trendingPornstarsArray.push({ pornstarName, href: Href, imageUrl: imageUrl.replace(".com", ".party") });
     });
-   
 
-    
+
+
 
 
 
@@ -107,12 +116,14 @@ export async function getHomePageVideos(request) {
       tags: tagsArray,
       trendingPornstars: trendingPornstarsArray
     };
+
+
     return new Response(JSON.stringify({ success: true, result }), {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error("Error processing req:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" }

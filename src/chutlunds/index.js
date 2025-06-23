@@ -1,6 +1,6 @@
 
 import { getVideos } from './getVideos';
-import { getHomePageVideos } from './getHomePageVideos';
+import { getHomePageVideos } from './getHomepageVideos.js';
 import { getChannelVideos } from './getChannelVideos';
 import { getTrendingChannels } from './getTrendingChannels';
 import { getTrendingSearchTags } from './getTrendingSearchTags.js';
