@@ -2,7 +2,8 @@ name = "cloudflare-workers-project"
 type = "javascript"
 main = "src/index.js"
 
-account_id = "189ceeaaabb10e0b317c12036a309d96"
+# account_id = "189ceeaaabb10e0b317c12036a309d96"
+account_id = "9aeac94ae706da39970cfebc2424b877"
 workers_dev = true
 compatibility_date = "2024-03-24"
 
