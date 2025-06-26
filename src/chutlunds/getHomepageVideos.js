@@ -20,9 +20,7 @@ export async function getHomePageVideos(req) {
 
     let href = requestBody.href;
 
-    console.log('====================================');
-    console.log(requestBody.href);
-    console.log('====================================');
+
 
     const response = await fetch(href);
     const body = await response.text();
@@ -73,10 +71,12 @@ export async function getHomePageVideos(req) {
 
 
     $(".sub_channels .channels a").each((i, el) => {
+
       const channelName = $(el).text().trim();
       const Href = $(el).attr("href").trim();
-      let imageUrl = $(el).find("img").attr("data-src") || $(el).find("img").attr("src");
-      trendingChannelArray.push({ channelName, href: Href, imageUrl: imageUrl.replace("//spankbang.com", " https://spankbang.party") });
+      var imageUrl = $(el).find("img").attr("data-src").replace("//spankbang.com", "https://www.spankbang.party") || $(el).find("img").attr("src").replace("//spankbang.com", "https://www.spankbang.party");
+      trendingChannelArray.push({ channelName, href: Href, imageUrl });
+
     });
     $(".tag_head a").each((i, el) => {
       const tag = $(el).text().trim();

@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import {Scrape_Video_Item_Channel_Creator_Pornstar} from "./utils";
+import { Scrape_Video_Item_Channel_Creator_Pornstar } from "./utils";
 
 export async function getChannelVideos(request) {
   if (request.method !== "POST") {
@@ -20,7 +20,7 @@ export async function getChannelVideos(request) {
     }
     const html3 = await response.text();
     const $2 = load(html3);
-  
+
     const finalDataArray = Scrape_Video_Item_Channel_Creator_Pornstar($2);
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
@@ -39,13 +39,15 @@ export async function getChannelVideos(request) {
       pages.push(pageNumbers[0]);
       pages.push(pageNumbers[pageNumbers.length - 1]);
     }
-    var channel_name =$2('h1.p-0.text-title-sm.font-bold.capitalize.text-primary').text().trim();
+    var channel_name = $2('h1.p-0.text-title-sm.font-bold.capitalize.text-primary').text().trim();
     var channel_subscriber = "";
     var channel_by = "";
     var channel_link = "";
+    var channel_image = $2("div.flex .shrink-0 img").attr("src").replace("//spankbang.com", "https://www.spankbang.party");
+
     var collageImages = [];
     channel_link = $2('div.grid  a').attr("href");
-  
+
     $2("span em").each((i, el) => {
       channel_subscriber = $2(el).text();
     });
@@ -74,7 +76,8 @@ export async function getChannelVideos(request) {
       channel_subscriber,
       channel_by,
       channel_link,
-      collageImages
+      collageImages,
+      channel_image
     };
     return new Response(JSON.stringify(result), {
       status: 200,
