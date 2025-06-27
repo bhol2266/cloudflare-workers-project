@@ -39,27 +39,39 @@ export async function getTrendingChannels(request) {
     var trendingChannels = [];
     var newChannels = [];
     const firstUl = $2("#channels ul").first();
-    firstUl.find("li a:nth-child(1)").each((index2, element) => {
 
-      const el = $2(element); // wrap the raw DOM node
-      const img = el.find('img'); // now we can use .find()
-      let src = img.attr('src');
-      src = src.replace(".com", ".party").replace("//", "https://www."); // get the first image if there are multiple
-      const title = img.attr('title');
-      trendingChannels.push({ channelName: title, imageUrl: src });
+    firstUl.find("li").each((index2, li) => {
+      const el = $2(li); // li wrapper
+
+      const firstA = el.find("a").first(); // or el.find("a.image")
+      const img = firstA.find("img");
+
+      let src = img.attr("src") || '';
+      src = src.replace(".com", ".party").replace("//", "https://www.");
+
+      const title = img.attr("title") || '';
+      const channel_href = "https://spankbang.party" + firstA.attr("href") || '';
+
+      trendingChannels.push({ channelName: title, imageUrl: src, channel_href });
     });
 
     const secondUl = $2("#channels ul").eq(1);
-    secondUl.find("li a:nth-child(1)").each((index2, element) => {
+    secondUl.find("li").each((index2, li) => {
+      const el = $2(li); // wrap the <li> element
 
+      const firstA = el.find("a").first(); // usually the one with class "image"
+      const img = firstA.find("img");
 
-       const el = $2(element); // wrap the raw DOM node
-      const img = el.find('img'); // now we can use .find()
-      let src = img.attr('src');
-      src = src.replace(".com", ".party").replace("//", "https://www."); // get the first image if there are multiple
-      const title = img.attr('title');
-      newChannels.push({ channelName: title, imageUrl: src });
+      let src = img.attr('src') || '';
+      src = src.replace(".com", ".party").replace("//", "https://www.");
+
+      const title = img.attr('title') || '';
+      const channel_href = "https://spankbang.party" + firstA.attr('href') || '';
+
+      newChannels.push({ channelName: title, imageUrl: src, channel_href });
     });
+
+
     const result = {
       finalDataArray,
       pages,
