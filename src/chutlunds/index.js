@@ -7,6 +7,7 @@ import { getTrendingSearchTags } from './getTrendingSearchTags.js';
 import { getPornstarVideos } from './getPornstarVideos';
 import { getCreators } from './getCreators.js';
 import {getCreatorsPage} from './getCreatorsPage.js';
+import { getTrendingPornstars } from './getTrendingPornstars.js';
 
 export default {
   async fetch(request) {
@@ -36,6 +37,9 @@ export default {
     }
     else if (path === '/chutlunds/getCreatorsPage') {
       return await getCreatorsPage(request);
+    }
+    else if (path === '/chutlunds/getTrendingPornstars') {
+      return await getTrendingPornstars(request);
     }
 
     return new Response('Not Found', { status: 404 });
