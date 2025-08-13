@@ -7,7 +7,7 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
 
         const thumbnail = $2(el).find("picture img").attr("data-src");
         const title = $2(el).find("picture img").attr("alt");
-        const duration = $2(el).find('.absolute.right-2.top-2.rounded.bg-neutral-900\\/75.px-1.text-body-sm.text-primary').text().trim();
+        const duration = $2(el).find('div.absolute.bottom-2.right-2').text().trim();
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
         const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
@@ -112,7 +112,7 @@ function Scrape_Video_Item2($2) {
     $2(".js-video-item").each((i, el) => {
         const thumbnail = $2(el).find("picture img").attr("data-src");
         const title = $2(el).find("picture img").attr("alt");
-        const duration = $2(el).find(".absolute.right-2.top-2.rounded.bg-neutral-900\\/75.px-1.text-body-sm.text-primary").text().trim();
+        const duration = $2(el).find('div.absolute.bottom-2.right-2').text().trim();
         const views = $2(el).find('span[data-testid="views"]').find("span").last().text().trim();
         const likePercentage = $2(el).find('span[data-testid="rates"]').find("span").last().text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
