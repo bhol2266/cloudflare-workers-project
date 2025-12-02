@@ -98,7 +98,8 @@ export function Scrape_Video_Item_Category_Search($2) {
             });
         }
     });
-    console.log(finalDataArray.length);
+    
+     finalDataArray = finalDataArray.length > 64 ? finalDataArray.slice(8) : finalDataArray
 
 
     return finalDataArray;
