@@ -5,14 +5,20 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
     const finalDataArray = [];
     $2(".js-video-item").each((i, el) => {
 
-        const thumbnail = $2(el).find("picture img").attr("data-src");
+
+
+        const thumbnail = $2(el).find("picture img").attr("src");
         const title = $2(el).find("picture img").attr("alt");
         const duration = $2(el).find('div.absolute.bottom-2.right-2').text().trim();
+
+
+
+
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
-        const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        const likePercentage = $2(el).find("[data-testid='rates'] span.md\\:text-body-md").text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
         const channelHref = $2(el).find('a[data-testid="title"]').attr('href') || '';
-        const videoBadge = $2(el).find('div.absolute.left-2.top-2').text().trim();
+        const videoBadge = $2(el).find("[data-testid='video-item-resolution']").text().trim();
         const previewVideo = $2(el).find('video source').attr('data-src');
         const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
         var refrenceLinkType = ''
@@ -20,6 +26,8 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
         if (channelHref.includes("/s/")) refrenceLinkType = "search"
         if (channelHref.includes("/creator/")) refrenceLinkType = "creator"
         if (channelHref.includes("/pornstar/")) refrenceLinkType = "pornstar"
+
+
 
 
         if (href !== void 0 && previewVideo !== void 0 && !thumbnail.includes("//assets.sb-cd.com")) {
@@ -38,6 +46,8 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
             });
         }
     });
+
+
 
 
     if (finalDataArray.length != 0 && finalDataArray.length > 8) {
@@ -61,7 +71,7 @@ export function Scrape_Video_Item_Category_Search($2) {
         const title = $2(el).find("picture img").attr("alt");
         const duration = $2(el).find("[data-testid='video-item-length']").text().trim();
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
-        const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        const likePercentage = $2(el).find("[data-testid='rates'] span.md\\:text-body-md").text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
 
 
@@ -99,7 +109,7 @@ export function Scrape_Video_Item_Category_Search($2) {
         }
     });
 
-     finalDataArray = finalDataArray.length > 64 ? finalDataArray.slice(8) : finalDataArray
+    finalDataArray = finalDataArray.length > 64 ? finalDataArray.slice(8) : finalDataArray
 
 
     return finalDataArray;

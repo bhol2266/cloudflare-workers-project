@@ -8,10 +8,12 @@
 </head>
 
 <body>
-    <div class="text-body-sm text-primary absolute right-2 bottom-2 rounded bg-neutral-900/75 px-1"
-        data-testid="video-item-length">
-        130m
-    </div>
+    <span data-testid="rates" x-show="$store.mediaLayoutSwitcher.layout !== 'eight-col'" class="mr-1 flex items-center">
+        <span class="mr-0.5 inline-flex"><svg class="i_svg i_icon-thumbs-up">
+                <use xlink:href="#icon-thumbs-up"></use>
+            </svg></span>
+        <span class="md:text-body-md">100%</span>
+    </span>
 </body>
 
 </html>

@@ -34,6 +34,8 @@ export async function getPornstarVideos(request) {
     const views = $2("span:contains('Views:') em").first().text().trim();
     const subscribers = $2("span:contains('Subscribers:') em").first().text().trim();
 
+
+
     const firstImageSrc = $2('.flex.h-32.shrink-0.basis-24.items-center.xl\\:h-\\[8\\.625rem\\] img').first().attr("src");
 
     // Extract similar profiles
@@ -52,8 +54,12 @@ export async function getPornstarVideos(request) {
       }
     });
 
+
+
     // Extract description
     const description = $2(".relative p").text().trim();
+
+
 
     const pornstarData = {
       name,
@@ -66,7 +72,11 @@ export async function getPornstarVideos(request) {
     };
 
 
+
+
     const finalDataArray = Scrape_Video_Item_Channel_Creator_Pornstar($2);
+
+    
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
       const data2 = $2(el).text().replace("page", "");
