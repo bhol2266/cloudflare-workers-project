@@ -39,7 +39,6 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
         }
     });
 
-    console.log(finalDataArray.length);
 
     if (finalDataArray.length != 0 && finalDataArray.length > 8) {
         finalDataArray.splice(0, 8)
@@ -55,17 +54,23 @@ export function Scrape_Video_Item_Category_Search($2) {
 
 
     //working for category , search
-    $2(".main_results .video-item").each((i, el) => {
-        const thumbnail = $2(el).find("picture img").attr("data-src");
+    $2(".js-video-item").each((i, el) => {
+
+
+        const thumbnail = $2(el).find("picture img").attr("src");
         const title = $2(el).find("picture img").attr("alt");
         const duration = $2(el).find(".l").text();
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
         const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
+        
+
         const channelHref = $2(el).find('a[data-testid="title"]').attr('href') || '';
-        const videoBadge = $2(el).find(".video-badge.h").text().trim();
-        const previewVideo = $2(el).find("picture img").attr("data-preview");
+        const videoBadge = $2(el).find("[data-testid='video-item-resolution']").text().trim();
+        const previewVideo = $2(el).find("video source").attr("data-src");
         const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
+        
+
 
         var refrenceLinkType = ''
         if (channelHref.includes("/channel/")) refrenceLinkType = "channel"
@@ -92,6 +97,8 @@ export function Scrape_Video_Item_Category_Search($2) {
             });
         }
     });
+    console.log(finalDataArray.length);
+
 
     return finalDataArray;
 }

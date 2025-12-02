@@ -19,6 +19,8 @@ export async function getVideos(request) {
     }
     const response = await fetch(url);
     const html3 = await response.text();
+
+    
     const $2 = load(html3);
     const finalDataArray = Scrape_Video_Item_Category_Search($2);
     let pages = [];
