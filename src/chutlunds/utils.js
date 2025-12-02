@@ -59,17 +59,18 @@ export function Scrape_Video_Item_Category_Search($2) {
 
         const thumbnail = $2(el).find("picture img").attr("src");
         const title = $2(el).find("picture img").attr("alt");
-        const duration = $2(el).find(".l").text();
+        const duration = $2(el).find("[data-testid='video-item-length']").text().trim();
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
         const likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
-        
+
 
         const channelHref = $2(el).find('a[data-testid="title"]').attr('href') || '';
         const videoBadge = $2(el).find("[data-testid='video-item-resolution']").text().trim();
         const previewVideo = $2(el).find("video source").attr("data-src");
         const href = `https://spankbang.com${$2(el).find("a").attr("href")}`;
-        
+
+        console.log(duration);
 
 
         var refrenceLinkType = ''
