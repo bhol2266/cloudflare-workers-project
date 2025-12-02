@@ -15,7 +15,7 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
 
 
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
-        let likePercentage = $(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        let likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
         if (likePercentage.length == 0) likePercentage = "75%"
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
         const channelHref = $2(el).find('a[data-testid="title"]').attr('href') || '';
@@ -72,7 +72,7 @@ export function Scrape_Video_Item_Category_Search($2) {
         const title = $2(el).find("picture img").attr("alt");
         const duration = $2(el).find("[data-testid='video-item-length']").text().trim();
         const views = $2(el).find('span[data-testid="views"]').find('span').last().text().trim();
-        let likePercentage = $(el).find('span[data-testid="rates"]').find('span').last().text().trim();
+        let likePercentage = $2(el).find('span[data-testid="rates"]').find('span').last().text().trim();
         if (likePercentage.length == 0) likePercentage = "75%"
         const channelName = $2(el).find('a[data-testid="title"] span').text().trim();
 
