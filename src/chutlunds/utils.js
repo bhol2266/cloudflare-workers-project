@@ -50,7 +50,7 @@ export function Scrape_Video_Item_Channel_Creator_Pornstar($2) {
 export function Scrape_Video_Item_Category_Search($2) {
 
 
-    const finalDataArray = [];
+    let finalDataArray = [];
 
 
     //working for category , search
@@ -98,7 +98,7 @@ export function Scrape_Video_Item_Category_Search($2) {
             });
         }
     });
-    
+
      finalDataArray = finalDataArray.length > 64 ? finalDataArray.slice(8) : finalDataArray
 
 
