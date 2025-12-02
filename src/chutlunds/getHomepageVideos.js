@@ -31,12 +31,12 @@ export async function getHomePageVideos(req) {
     $(".js-video-item").each((i, el) => {
 
 
-      const thumbnail = $(el).find("picture img").attr("data-src");
+      const thumbnail = $(el).find("picture img").attr("src");
       const title = $(el).find("picture img").attr("alt");
-          const duration = $(el).find('div.absolute.bottom-2.right-2').text().trim();
+      const duration = $(el).find('div.absolute.bottom-2.right-2').text().trim();
 
-      console.log("im herer");
-      
+      console.log(thumbnail, title, duration);
+
       const views = $(el).find('span[data-testid="views"]').find('span').last().text().trim();
       const likePercentage = $(el).find('span[data-testid="rates"]').find('span').last().text().trim();
       const channelName = $(el).find('a[data-testid="title"] span').text().trim();
