@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0",
+    "extract-urls": "^1.4.1",
     "fs": "^0.0.1-security"
   }
 }

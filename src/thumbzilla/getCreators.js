@@ -1,31 +1,48 @@
 import { load } from "cheerio";
-import { Scrape_Video_Item_Category_Search } from "./utils";
 
-export async function getVideos(request) {
 
-  //this api is used by category and seach page only
 
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+
+export async function getCreators(request) {
+
   try {
     const requestBody = await request.json();
-    let url = requestBody.url;
-    if (url.includes("https://spankbang.com/")) {
-      url = url.replace("https://spankbang.com/", "https://spankbang.party/");
-    }
+    let page = requestBody.page;
+    let url = `https://spankbang.party/creators/${page}/?o=new`;
+
+
     const response = await fetch(url);
     const html3 = await response.text();
-
-    console.log(html3);
-    
-
-    
     const $2 = load(html3);
-    const finalDataArray = Scrape_Video_Item_Category_Search($2);
+
+
+    let finalDataArray = [];
+
+    $2("#channels a").each((i, el) => {
+
+      const creatorHref = $2(el).attr('href') || '';
+      var creatorImage = $2(el).find('img').attr('data-src') || $2(el).find('img').attr('src');
+      const creatorViews = $2(el).find('.absolute.bottom-2.left-2').text().trim();
+      const creatorVideos = $2(el).find('.absolute.bottom-2.right-2').text().trim();
+      const creatorName = $2(el).find('span.text-body-lg.text-link-secondary').text().trim();
+      if (creatorImage) {
+        creatorImage = creatorImage.replace(/^\/\//, "https://").replace(".com", ".party");
+      }
+
+      if (creatorName.length != 0) {
+        finalDataArray.push({
+          creatorHref,
+          creatorImage,
+          creatorViews,
+          creatorVideos,
+          creatorName
+        });
+      }
+
+    });
+
+
+
     let pages = [];
     $2(".paginate-bar .status").each((i, el) => {
       const data2 = $2(el).text().replace("page", "");
@@ -45,8 +62,7 @@ export async function getVideos(request) {
     }
     const result = {
       finalDataArray,
-      pages,
-      noVideos: finalDataArray.length === 0
+      pages
     };
     return new Response(JSON.stringify(result), {
       status: 200,
