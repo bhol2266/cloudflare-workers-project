@@ -1,12 +1,11 @@
 import { load } from "cheerio";
-import fs from "fs";
+
 import extractUrls from "extract-urls";
-
-
-
 function scrapeListing(html) {
     const $ = load(html);
 
+
+    
     /* ---------------- Listing videos ---------------- */
     const results = [];
 
@@ -99,24 +98,27 @@ function scrapeListing(html) {
     };
 }
 
+export async function getVideoPlayer(request) {
 
-async function testScrape() {
+    //this api is used by category and seach page only
+
+    if (request.method !== "POST") {
+        return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
+            status: 405,
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+
+
+
     try {
-        const url =
-            "https://www.thumbzilla.com/video/6709a14defd71/pov-colombian-big-ass-scarlet-benz-lets-airbnb-host-fill-her-pussy-with-cum-creampie";
+        const requestBody = await request.json();
+        let url = requestBody.url;
 
         const response = await fetch(url);
 
         const html = await response.text();
-
-        // Save raw HTML to file
-        fs.writeFileSync("thumbzilla_page.html", html, "utf-8");
-
-        console.log("HTML saved to thumbzilla_page.html");
-
-
-        const $ = load(html);
-
+        console.log(url);
 
         const position = html.indexOf(`videoUrl`,)
         let word = html.substring(position, position + 3000); // "Hello"
@@ -146,11 +148,16 @@ async function testScrape() {
         let results = scrapeListing(html);
         results.videoUrls = qualityMap;
 
-        console.log(results);
+
+        return new Response(JSON.stringify(results), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
     } catch (error) {
-        console.error("Scraping error:", error);
+        console.error("Error processing request:", error);
+        return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
     }
 }
-
-// Run test
-testScrape();

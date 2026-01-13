@@ -1,5 +1,5 @@
 
-import { getVideos } from './getVideos';
+import { getVideoPlayer } from './getVideoPlayer';
 import { getHomePageVideos } from './getHomepageVideos.js';
 import { getChannelVideos } from './getChannelVideos';
 import { getTrendingChannels } from './getTrendingChannels';
@@ -14,31 +14,31 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    if (path === '/chutlunds/getVideos') {
+    if (path === '/thumbzilla/getVideoPlayer') {
   
-      return await getVideos(request);
-    } else if (path === '/chutlunds/getHomePageVideos') {
+      return await getVideoPlayer(request);
+    } else if (path === '/thumbzilla/getHomePageVideos') {
       return await getHomePageVideos(request);
 
-    } else if (path === '/chutlunds/getChannelVideos') {
+    } else if (path === '/thumbzilla/getChannelVideos') {
       return await getChannelVideos(request);
     
-    } else if (path === '/chutlunds/getTrendingChannels') {
+    } else if (path === '/thumbzilla/getTrendingChannels') {
       return await getTrendingChannels(request);
     }
-    else if (path === '/chutlunds/getTrendingSearchTags') {
+    else if (path === '/thumbzilla/getTrendingSearchTags') {
       return await getTrendingSearchTags(request);
     }
-    else if (path === '/chutlunds/getPornstarVideos') {
+    else if (path === '/thumbzilla/getPornstarVideos') {
       return await getPornstarVideos(request);
     }
-    else if (path === '/chutlunds/getCreators') {
+    else if (path === '/thumbzilla/getCreators') {
       return await getCreators(request);
     }
-    else if (path === '/chutlunds/getCreatorsPage') {
+    else if (path === '/thumbzilla/getCreatorsPage') {
       return await getCreatorsPage(request);
     }
-    else if (path === '/chutlunds/getTrendingPornstars') {
+    else if (path === '/thumbzilla/getTrendingPornstars') {
       return await getTrendingPornstars(request);
     }
 

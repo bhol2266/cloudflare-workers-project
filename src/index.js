@@ -1,4 +1,5 @@
 import chutlundsRouter from './chutlunds/index.js';
+import thumbzillaRouter from './thumbzilla/index.js';
 import desikahanyaRouter from './desikahaniya/index.js';
 
 export default {
@@ -10,6 +11,8 @@ export default {
       // Route requests based on path prefix
       if (path.startsWith('/chutlunds')) {
         return await chutlundsRouter.fetch(request);
+      } if (path.startsWith('/thumbzilla')) {
+        return await thumbzillaRouter.fetch(request);
       } else if (path.startsWith('/desikahaniya')) {
         return await desikahanyaRouter.fetch(request);
       }
