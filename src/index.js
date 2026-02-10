@@ -1,6 +1,7 @@
 import chutlundsRouter from './chutlunds/index.js';
 import thumbzillaRouter from './thumbzilla/index.js';
 import desikahanyaRouter from './desikahaniya/index.js';
+import xgroovyRouter from './xgroovy/index.js';
 
 export default {
   async fetch(request) {
@@ -15,6 +16,8 @@ export default {
         return await thumbzillaRouter.fetch(request);
       } else if (path.startsWith('/desikahaniya')) {
         return await desikahanyaRouter.fetch(request);
+      } else if (path.startsWith('/xgroovy')) {
+        return await xgroovyRouter.fetch(request);
       }
 
       return new Response('Not Found', {
