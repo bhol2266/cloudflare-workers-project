@@ -3,12 +3,27 @@ import { load } from "cheerio";
 function scrapeVideoData(html) {
   const $ = load(html);
 
+  let poster = null;
+
+  $("script").each((i, el) => {
+    const scriptContent = $(el).html();
+
+    if (scriptContent && scriptContent.includes("var poster_url")) {
+      const match = scriptContent.match(/var\s+poster_url\s*=\s*"([^"]+)"/);
+      if (match) {
+        poster = match[1];
+      }
+    }
+  });
+
+
   // Video Details
   const videoDetails = {
     title: $('.page-title h1').text().trim(),
     duration: $('.page-title .badge.duration').text().trim(),
     quality: $('.page-title .badge.quality').text().trim(),
     views: $('.page-title .badge.views').text().trim(),
+
 
     // Tags/Keywords
     tags: [],
@@ -27,8 +42,6 @@ function scrapeVideoData(html) {
     // Video Sources
     videoSources: [],
 
-    // Poster/Thumbnail
-    poster: null,
 
     // Upload Info
     uploadDate: null,
@@ -36,6 +49,7 @@ function scrapeVideoData(html) {
     // Comments
     commentsCount: null
   };
+
 
   // Extract tags
   $('.meta-data .default-list li').each((i, elem) => {
@@ -61,6 +75,7 @@ function scrapeVideoData(html) {
 
   // Extract description
   videoDetails.description = $('.block-details .info .item').text().trim();
+  videoDetails.poster = poster;
 
   // Extract video sources
   $('video source').each((i, elem) => {
@@ -72,8 +87,7 @@ function scrapeVideoData(html) {
     });
   });
 
-  // Extract poster
-  videoDetails.poster = $('video').attr('poster');
+
 
   // Extract upload date from schema
   const schemaScript = $('script[type="application/ld+json"]').html();
@@ -198,10 +212,28 @@ async function resolveVideoCDN(videoSources) {
 }
 
 export async function getVideoplayer(request) {
+  // CORS headers
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+  };
+
+  // Handle preflight OPTIONS request
+  if (request.method === "OPTIONS") {
+    return new Response(null, {
+      headers: corsHeaders
+    });
+  }
+
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" }
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders
+      }
     });
   }
 
@@ -220,18 +252,25 @@ export async function getVideoplayer(request) {
     }
 
     return new Response(JSON.stringify({
-      videoDetails: scrapedData.videoDetails,
-      relatedVideos: scrapedData.relatedVideos
+      // videoDetails: scrapedData.videoDetails,
+      // relatedVideos: scrapedData.relatedVideos,
+      poster: scrapedData.videoDetails.poster
     }), {
       status: 200,
-      headers: { "Content-Type": "application/json" }
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders
+      }
     });
 
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders
+      }
     });
   }
 }
