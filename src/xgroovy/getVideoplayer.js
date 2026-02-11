@@ -252,9 +252,8 @@ export async function getVideoplayer(request) {
     }
 
     return new Response(JSON.stringify({
-      // videoDetails: scrapedData.videoDetails,
-      // relatedVideos: scrapedData.relatedVideos,
-      poster: scrapedData.videoDetails.poster
+      videoDetails: scrapedData.videoDetails,
+      relatedVideos: scrapedData.relatedVideos,
     }), {
       status: 200,
       headers: {
