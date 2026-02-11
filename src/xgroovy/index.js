@@ -1,4 +1,4 @@
-import { getVideos } from './getVideos';
+import { getVideoplayer } from './getVideoplayer';
 import { getVideoCDN } from './getVideoCDN';
 
 export default {
@@ -6,8 +6,8 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    if (path === '/xgroovy/getVideos') {
-      return await getVideos(request);
+    if (path === '/xgroovy/getVideoplayer') {
+      return await getVideoplayer(request);
     } else if (path === '/xgroovy/getVideoCDN') {
       return await getVideoCDN(request);
     }

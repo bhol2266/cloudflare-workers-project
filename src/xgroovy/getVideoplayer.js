@@ -1,9 +1,5 @@
 import { load } from "cheerio";
 
-
-
-
-
 function scrapeVideoData(html) {
   const $ = load(html);
 
@@ -157,19 +153,51 @@ function scrapeVideoData(html) {
   };
 }
 
+// Integrated function to resolve CDN URLs
+async function resolveVideoCDN(videoSources) {
+  if (!Array.isArray(videoSources) || videoSources.length === 0) {
+    return videoSources;
+  }
 
+  // Map each source to a resolution promise
+  const resolutionPromises = videoSources.map(async (source) => {
+    try {
+      // Attempt fast HEAD request first
+      let response = await fetch(source.src, {
+        method: 'HEAD',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+          'Referer': 'https://xgroovy.com/',
+        },
+        redirect: 'follow',
+      });
 
+      // Fallback for CDNs that block HEAD
+      if (response.status === 405 || response.status === 403) {
+        response = await fetch(source.src, {
+          method: 'GET',
+          headers: { 'Range': 'bytes=0-0' },
+          redirect: 'follow',
+        });
+        if (response.body) await response.body.cancel();
+      }
 
+      return {
+        ...source,
+        src: response.url // Replace original URL with the final CDN URL
+      };
+    } catch (e) {
+      // If one fails, return original source with error flag
+      return { ...source, error: "Failed to resolve" };
+    }
+  });
 
+  // Execute all simultaneously
+  const resolvedSources = await Promise.all(resolutionPromises);
+  return resolvedSources;
+}
 
-
-
-
-
-
-
-
-export async function getVideos(request) {
+export async function getVideoplayer(request) {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
       status: 405,
@@ -178,20 +206,18 @@ export async function getVideos(request) {
   }
 
   try {
-
     const requestBody = await request.json();
     let url = requestBody.url;
-
 
     const response = await fetch(url);
     const html = await response.text();
 
-
-
-
     const scrapedData = scrapeVideoData(html);
 
-
+    // Resolve CDN URLs for video sources
+    if (scrapedData.videoDetails.videoSources.length > 0) {
+      scrapedData.videoDetails.videoSources = await resolveVideoCDN(scrapedData.videoDetails.videoSources);
+    }
 
     return new Response(JSON.stringify({
       videoDetails: scrapedData.videoDetails,
