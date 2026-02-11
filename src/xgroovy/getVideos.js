@@ -179,7 +179,9 @@ export async function getVideos(request) {
 
   try {
 
-    let url = "https://xgroovy.com/videos/423908/japanese-full-time-movie-horny-lad-uses-every-opportunity-to-fuck-his-cute-step-sis-or-her-bestie/"
+    const requestBody = await request.json();
+    let url = requestBody.url;
+
 
     const response = await fetch(url);
     const html = await response.text();
@@ -189,9 +191,7 @@ export async function getVideos(request) {
 
     const scrapedData = scrapeVideoData(html);
 
-    console.log('Video Details:', JSON.stringify(scrapedData.videoDetails, null, 2));
-    console.log('Related Videos Count:', scrapedData.relatedVideos.length);
-    console.log('Related Videos:', JSON.stringify(scrapedData.relatedVideos, null, 2));
+
 
     return new Response(JSON.stringify({
       videoDetails: scrapedData.videoDetails,
