@@ -1,179 +1,51 @@
 import { load } from "cheerio";
+import { extractVideoThumbnailData } from "./shared-utils.js";
 
-function scrapeVideoData(html) {
-  const $ = load(html);
+// CORS headers - only enabled for this API
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
+};
 
+
+function extractPosterUrl($) {
   let poster = null;
-
+  
   $("script").each((i, el) => {
     const scriptContent = $(el).html();
-
     if (scriptContent && scriptContent.includes("var poster_url")) {
       const match = scriptContent.match(/var\s+poster_url\s*=\s*"([^"]+)"/);
       if (match) {
         poster = match[1];
+        return false; // Break the loop
       }
     }
   });
+  
+  return poster;
+}
 
 
-  // Video Details
-  const videoDetails = {
-    title: $('.page-title h1').text().trim(),
-    duration: $('.page-title .badge.duration').text().trim(),
-    quality: $('.page-title .badge.quality').text().trim(),
-    views: $('.page-title .badge.views').text().trim(),
-
-
-    // Tags/Keywords
-    tags: [],
-
-    // Pornstar
-    pornstar: null,
-
-    // Rating
-    likes: null,
-    dislikes: null,
-    ratingPercentage: null,
-
-    // Description
-    description: null,
-
-    // Video Sources
-    videoSources: [],
-
-
-    // Upload Info
-    uploadDate: null,
-
-    // Comments
-    commentsCount: null
-  };
-
-
-  // Extract tags
-  $('.meta-data .default-list li').each((i, elem) => {
-    const $elem = $(elem);
-    if ($elem.hasClass('item-model')) {
-      videoDetails.pornstar = {
-        name: $elem.find('a').text().replace(/\s+/g, ' ').trim().replace(/^\S+\s/, ''),
-        url: $elem.find('a').attr('href'),
-        count: $elem.find('.count').text().trim()
-      };
-    } else {
-      const tag = $elem.find('a').text().trim();
-      const url = $elem.find('a').attr('href');
-      if (tag) {
-        videoDetails.tags.push({ tag, url });
-      }
-    }
-  });
-
-  // Extract likes/dislikes
-  videoDetails.likes = $('.rate-like span').text().trim();
-  videoDetails.dislikes = $('.rate-dislike span').text().trim();
-
-  // Extract description
-  videoDetails.description = $('.block-details .info .item').text().trim();
-  videoDetails.poster = poster;
-
-  // Extract video sources
-  $('video source').each((i, elem) => {
-    videoDetails.videoSources.push({
-      src: $(elem).attr('src'),
-      type: $(elem).attr('type'),
-      quality: $(elem).attr('title'),
-      isHD: $(elem).attr('data-fluid-hd') === 'true'
-    });
-  });
-
-
-
-  // Extract upload date from schema
+function extractSchemaData($) {
   const schemaScript = $('script[type="application/ld+json"]').html();
   if (schemaScript) {
     try {
-      const schema = JSON.parse(schemaScript);
-      videoDetails.uploadDate = schema.uploadDate;
-      videoDetails.commentsCount = schema.commentCount;
+      return JSON.parse(schemaScript);
     } catch (e) {
       console.error('Error parsing schema:', e);
     }
   }
-
-  // Related Videos
-  const relatedVideos = [];
-
-  $('#list_videos_custom_related_sphinx_videos_items .item').each((i, elem) => {
-    const $item = $(elem);
-
-    const video = {
-      id: $item.attr('data-video-id'),
-      title: $item.find('.title').text().trim(),
-      url: $item.find('a.popito').attr('href'),
-      thumbnail: $item.find('img.thumb').attr('data-jpg') || $item.find('img.thumb').attr('src'),
-      duration: $item.find('.duration').text().trim(),
-      views: $item.find('.views').text().trim(),
-      quality: null,
-      fps: null,
-      rating: null,
-
-      // Author/Channel info
-      author: null,
-      authorUrl: null,
-      authorType: null, // 'pornstar' or 'channel'
-
-      // Preview video
-      previewVideo: $item.find('img.thumb').attr('data-preview')
-    };
-
-    // Extract quality
-    const qualityBadge = $item.find('.item-quality span.is-hd').text().trim();
-    if (qualityBadge) {
-      video.quality = qualityBadge;
-    }
-
-    // Extract FPS
-    const fpsBadge = $item.find('.item-quality span.high-fps').text().trim();
-    if (fpsBadge) {
-      video.fps = fpsBadge;
-    }
-
-    // Extract rating
-    const ratingText = $item.find('.rating').text().trim();
-    if (ratingText) {
-      video.rating = ratingText;
-    }
-
-    // Extract author (pornstar or channel)
-    const authorLink = $item.find('.author-link a');
-    if (authorLink.length) {
-      video.author = authorLink.text().replace(/\s+/g, ' ').trim().replace(/^\S+\s/, '');
-      video.authorUrl = authorLink.attr('href');
-
-      if (authorLink.find('i.mi.star').length) {
-        video.authorType = 'pornstar';
-      } else if (authorLink.find('i.mi.videocam').length) {
-        video.authorType = 'channel';
-      }
-    }
-
-    relatedVideos.push(video);
-  });
-
-  return {
-    videoDetails,
-    relatedVideos
-  };
+  return {};
 }
 
-// Integrated function to resolve CDN URLs
+
 async function resolveVideoCDN(videoSources) {
   if (!Array.isArray(videoSources) || videoSources.length === 0) {
     return videoSources;
   }
 
-  // Map each source to a resolution promise
   const resolutionPromises = videoSources.map(async (source) => {
     try {
       // Attempt fast HEAD request first
@@ -186,7 +58,7 @@ async function resolveVideoCDN(videoSources) {
         redirect: 'follow',
       });
 
-      // Fallback for CDNs that block HEAD
+      // Fallback for CDNs that block HEAD requests
       if (response.status === 405 || response.status === 403) {
         response = await fetch(source.src, {
           method: 'GET',
@@ -198,37 +70,146 @@ async function resolveVideoCDN(videoSources) {
 
       return {
         ...source,
-        src: response.url // Replace original URL with the final CDN URL
+        src: response.url // Replace with final CDN URL
       };
     } catch (e) {
-      // If one fails, return original source with error flag
+      // Return original source with error flag if resolution fails
       return { ...source, error: "Failed to resolve" };
     }
   });
 
-  // Execute all simultaneously
-  const resolvedSources = await Promise.all(resolutionPromises);
-  return resolvedSources;
+  // Execute all resolutions simultaneously
+  return await Promise.all(resolutionPromises);
 }
 
-export async function getVideoplayer(request) {
-  // CORS headers
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400",
+/**
+ * Scrape video player page data
+ * @param {string} html - HTML content
+ * @returns {Object} Object containing videoDetails and relatedVideos
+ */
+function scrapeVideoData(html) {
+  const $ = load(html);
+
+  // Initialize video details object
+  const videoDetails = {
+    title: $('.page-title h1').text().trim() || null,
+    duration: $('.page-title .badge.duration').text().trim() || null,
+    quality: $('.page-title .badge.quality').text().trim() || null,
+    views: $('.page-title .badge.views').text().trim() || null,
+    tags: [],
+    pornstar: null,
+    likes: null,
+    dislikes: null,
+    ratingPercentage: null,
+    description: null,
+    videoSources: [],
+    poster: null,
+    uploadDate: null,
+    commentsCount: null
   };
 
-  // Handle preflight OPTIONS request
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      headers: corsHeaders
-    });
+  // Extract poster URL
+  videoDetails.poster = extractPosterUrl($);
+
+  // Extract tags and pornstar
+  $('.meta-data .default-list li').each((i, elem) => {
+    const $elem = $(elem);
+    
+    if ($elem.hasClass('item-model')) {
+      // Extract pornstar info
+      const pornstarName = $elem.find('a').text().replace(/\s+/g, ' ').trim().replace(/^\S+\s/, '');
+      if (pornstarName) {
+        videoDetails.pornstar = {
+          name: pornstarName,
+          url: $elem.find('a').attr('href') || null,
+          count: $elem.find('.count').text().trim() || null
+        };
+      }
+    } else {
+      // Extract tags
+      const tag = $elem.find('a').text().trim();
+      const url = $elem.find('a').attr('href');
+      if (tag) {
+        videoDetails.tags.push({ tag, url: url || null });
+      }
+    }
+  });
+
+  // Extract rating information
+  videoDetails.likes = $('.rate-like span').text().trim() || null;
+  videoDetails.dislikes = $('.rate-dislike span').text().trim() || null;
+
+  // Calculate rating percentage
+  if (videoDetails.likes && videoDetails.dislikes) {
+    const likes = parseInt(videoDetails.likes.replace(/,/g, ''));
+    const dislikes = parseInt(videoDetails.dislikes.replace(/,/g, ''));
+    if (!isNaN(likes) && !isNaN(dislikes)) {
+      const total = likes + dislikes;
+      if (total > 0) {
+        videoDetails.ratingPercentage = Math.round((likes / total) * 100) + '%';
+      }
+    }
   }
 
+  // Extract description
+  videoDetails.description = $('.block-details .info .item').text().trim() || null;
+
+  // Extract video sources
+  $('video source').each((i, elem) => {
+    const src = $(elem).attr('src');
+    if (src) {
+      videoDetails.videoSources.push({
+        src,
+        type: $(elem).attr('type') || null,
+        quality: $(elem).attr('title') || null,
+        isHD: $(elem).attr('data-fluid-hd') === 'true'
+      });
+    }
+  });
+
+  // Extract schema.org data
+  const schemaData = extractSchemaData($);
+  if (schemaData.uploadDate) {
+    videoDetails.uploadDate = schemaData.uploadDate;
+  }
+  if (schemaData.commentCount !== undefined) {
+    videoDetails.commentsCount = schemaData.commentCount;
+  }
+
+  // Extract related videos
+  const relatedVideos = [];
+  $('#list_videos_custom_related_sphinx_videos_items .item').each((i, elem) => {
+    const video = extractVideoThumbnailData($, $(elem));
+    if (video && video.id) {
+      relatedVideos.push(video);
+    }
+  });
+
+  return {
+    videoDetails,
+    relatedVideos
+  };
+}
+
+/**
+ * API endpoint to get video player details
+ * Accepts POST requests with video URL
+ * CORS enabled for cross-origin requests
+ * @param {Request} request - Request object
+ * @returns {Promise<Response>} Response with video details and related videos
+ */
+export async function getVideoplayer(request) {
+  // Handle preflight OPTIONS request for CORS
+  if (request.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  // Validate request method
   if (request.method !== "POST") {
-    return new Response(JSON.stringify({ message: "Only POST requests are allowed" }), {
+    return new Response(JSON.stringify({
+      success: false,
+      message: "Only POST requests are allowed"
+    }), {
       status: 405,
       headers: {
         "Content-Type": "application/json",
@@ -238,22 +219,55 @@ export async function getVideoplayer(request) {
   }
 
   try {
-    const requestBody = await request.json();
-    let url = requestBody.url;
+    // Parse request body
+    const body = await request.json();
+    const url = body.url;
 
-    const response = await fetch(url);
+    // Validate URL parameter
+    if (!url) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: "URL is required in request body"
+      }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders
+        }
+      });
+    }
+
+    // Fetch the video page HTML
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Referer': 'https://xgroovy.com/',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status}`);
+    }
+
     const html = await response.text();
 
+    // Scrape the data
     const scrapedData = scrapeVideoData(html);
 
     // Resolve CDN URLs for video sources
     if (scrapedData.videoDetails.videoSources.length > 0) {
-      scrapedData.videoDetails.videoSources = await resolveVideoCDN(scrapedData.videoDetails.videoSources);
+      scrapedData.videoDetails.videoSources = await resolveVideoCDN(
+        scrapedData.videoDetails.videoSources
+      );
     }
 
+    // Return success response
     return new Response(JSON.stringify({
+      success: true,
       videoDetails: scrapedData.videoDetails,
       relatedVideos: scrapedData.relatedVideos,
+      relatedCount: scrapedData.relatedVideos.length
     }), {
       status: 200,
       headers: {
@@ -263,8 +277,12 @@ export async function getVideoplayer(request) {
     });
 
   } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+    console.error("Error in getVideoplayer:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message
+    }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",
